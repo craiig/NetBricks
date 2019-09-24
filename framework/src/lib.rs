@@ -4,10 +4,10 @@
 #![feature(box_syntax)]
 #![feature(specialization)]
 #![feature(slice_concat_ext)]
-#![feature(fnbox)]
+// #![feature(fnbox)] //unneeded feature
 #![feature(alloc)]
-#![feature(heap_api)]
-#![feature(unique)]
+// #![feature(heap_api)] //unneeded feature
+// #![feature(unique)] //unneeded feature
 #![feature(const_fn)]
 // FIXME: Figure out if this is really the right thing here.
 #![feature(ptr_internals)]
