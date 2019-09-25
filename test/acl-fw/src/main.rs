@@ -31,12 +31,20 @@ fn test<S: Scheduler + Sized>(ports: Vec<CacheAligned<PortQueue>>, sched: &mut S
     }
     let acls = vec![
         Acl {
+            src_ip: Some(Ipv4Prefix::new(0x0a000001, 32)), // 10.0.0.1/32
+            dst_ip: None,
+            src_port: None,
+            dst_port: None,
+            established: None,
+            drop: true, 
+        },
+        Acl {
             src_ip: Some(Ipv4Prefix::new(0, 0)),
             dst_ip: None,
             src_port: None,
             dst_port: None,
             established: None,
-            drop: false,
+            drop: false, 
         },
     ];
     let pipelines: Vec<_> = ports
