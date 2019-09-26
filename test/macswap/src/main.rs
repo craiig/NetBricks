@@ -18,7 +18,7 @@ use std::thread;
 use std::time::Duration;
 mod nf;
 
-fn test<T, S>(ports: Vec<T>, sched: &mut S)
+fn test<T, S>(ports: Vec<T>, sched: &mut S, spin_duration: u64)
 where
     T: PacketRx + PacketTx + Display + Clone + 'static,
     S: Scheduler + Sized,
@@ -29,7 +29,7 @@ where
 
     let pipelines: Vec<_> = ports
         .iter()
-        .map(|port| macswap(ReceiveBatch::new(port.clone())).send(port.clone()))
+        .map(|port| macswap(ReceiveBatch::new(port.clone()), spin_duration).send(port.clone()))
         .collect();
     println!("Running {} pipelines", pipelines.len());
     for pipeline in pipelines {
@@ -46,6 +46,12 @@ fn main() {
         "If this option is set to a nonzero value, then the \
          test will exit after X seconds.",
     );
+    opts.optopt(
+        "",
+        "spin",
+        "CPU spin",
+        "Counts up to X before continuing",
+    );
 
     let args: Vec<String> = env::args().collect();
     let matches = match opts.parse(&args[1..]) {
@@ -61,11 +67,17 @@ fn main() {
         .parse()
         .expect("Could not parse test duration");
 
+    let spin_duration: u64 = matches
+        .opt_str("spin")
+        .unwrap_or_else(|| String::from("0"))
+        .parse()
+        .expect("Could not parse spin duration");
+
     match initialize_system(&configuration) {
         Ok(mut context) => {
             context.start_schedulers();
 
-            context.add_pipeline_to_run(Arc::new(move |p, s: &mut StandaloneScheduler| test(p, s)));
+            context.add_pipeline_to_run(Arc::new(move |p, s: &mut StandaloneScheduler| test(p, s, spin_duration)));
             context.execute();
 
             if test_duration != 0 {
