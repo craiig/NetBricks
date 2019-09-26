@@ -1,0 +1,14 @@
+[package]
+name = "ubc-nss-chain"
+version = "0.1.0"
+authors = ["Craig Mustard, but mostly Aurojit Panda"]
+
+[dependencies]
+# zcsi_aclfw = { path = "../acl-fw" }
+# zcsi-nat = { path = "../nat" }
+e2d2 = { path = "../../framework", features = ["performance"] }
+time = ">=0.1.0"
+getopts = "*"
+rand = "0.3"
+fnv = "*"
+

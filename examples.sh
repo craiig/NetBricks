@@ -1,6 +1,7 @@
 #!/bin/bash
 # Lists all the examples in Bess. This is used by the build script.
 export examples=(
+        test/ubc-nss-chain
         test/framework-test
         test/delay-test
         test/shutdown-test
