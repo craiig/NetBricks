@@ -74,6 +74,7 @@ impl NetBricksContext {
         T: Fn(Vec<AlignedPortQueue>, &mut StandaloneScheduler) + Send + Sync + 'static,
     {
         for (core, channel) in &self.scheduler_channels {
+            println!("adding pipeline to run on core: {}", core);
             let ports = match self.rx_queues.get(core) {
                 Some(v) => v.clone(),
                 None => vec![],
@@ -242,6 +243,7 @@ pub fn initialize_system(configuration: &NetbricksConfiguration) -> Result<NetBr
                 let rx_q = rx_q as i32;
                 match PmdPort::new_queue_pair(port_instance, rx_q, rx_q) {
                     Ok(q) => {
+			println!("inserting queue {} on port {} on core {}", rx_q, port.name, core);
                         ctx.rx_queues.entry(*core).or_insert_with(|| vec![]).push(q);
                     }
                     Err(e) => {
